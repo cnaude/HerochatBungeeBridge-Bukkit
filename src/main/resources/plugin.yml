@@ -11,3 +11,9 @@ permissions:
   BungeeChat.nickname.others:
     description: Able to set an other person's nickname.
     default: op
+  BungeeChat.reload:
+    description: Reload the bridge settings.
+    default: op
+commands:
+    bungeechatreload:
+        description: Reload configuration.

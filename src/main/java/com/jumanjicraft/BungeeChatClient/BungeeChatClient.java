@@ -35,6 +35,7 @@ public class BungeeChatClient extends JavaPlugin {
         setupVault();
         bungeeChatListener = new BungeeChatListener(this);
         getServer().getPluginManager().registerEvents(new BungeeHeroListener(this), this);
+        getCommand("bungeechatreload").setExecutor(new BungeeChatReloadCommand(this));
     }
 
     public void loadConfig() {
