@@ -31,6 +31,7 @@ public class BungeeHeroListener implements Listener {
         cm.setGroupSuffix(plugin.getGroupSuffix(player));
         cm.setGroup(plugin.getPlayerGroup(player));
         
+        plugin.logDebug("Transmitting message to BungeeCord: <" + cm.getChannel() + "><" +cm.getSender() + "> "+ cm.getMessage());
         plugin.getBungeeChatListener().TransmitChatMessage(cm);
     }
     

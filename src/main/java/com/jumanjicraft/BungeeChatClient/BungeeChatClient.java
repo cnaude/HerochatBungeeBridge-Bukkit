@@ -1,5 +1,7 @@
 package com.jumanjicraft.BungeeChatClient;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,9 +11,13 @@ public class BungeeChatClient extends JavaPlugin {
     private String prefixSymbol;
     private BungeeChatListener bungeeChatListener;
     public VaultHook vaultHelpers;
+    static final Logger LOG = Logger.getLogger("Minecraft");
+    public String LOG_HEADER;
+    private boolean debugEnabled;
 
     @Override
     public void onEnable() {
+        LOG_HEADER = "[" + this.getName() + "]";
         loadConfig();
         setupVault();
         bungeeChatListener = new BungeeChatListener(this);
@@ -20,6 +26,7 @@ public class BungeeChatClient extends JavaPlugin {
 
     public void loadConfig() {
         prefixSymbol = getConfig().getString("prefix-symbol", "");
+        debugEnabled = getConfig().getBoolean("debug", false);
     }
     
     public String getPrefixSymbol() {
@@ -146,6 +153,32 @@ public class BungeeChatClient extends JavaPlugin {
             groupName = "";
         }
         return ChatColor.translateAlternateColorCodes('&', groupName);
+    }
+    
+    /**
+     *
+     * @param message
+     */
+    public void logInfo(String message) {
+        LOG.log(Level.INFO, String.format("%s %s", LOG_HEADER, message));
+    }
+
+    /**
+     *
+     * @param message
+     */
+    public void logError(String message) {
+        LOG.log(Level.SEVERE, String.format("%s %s", LOG_HEADER, message));
+    }
+
+    /**
+     *
+     * @param message
+     */
+    public void logDebug(String message) {
+        if (debugEnabled) {
+            LOG.log(Level.INFO, String.format("%s [DEBUG] %s", LOG_HEADER, message));
+        }
     }
 
 }
