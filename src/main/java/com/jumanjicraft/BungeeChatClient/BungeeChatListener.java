@@ -61,7 +61,7 @@ public class BungeeChatListener implements PluginMessageListener {
      */
     @Override
     public void onPluginMessageReceived(String tag, Player player, byte[] data) {
-        if (!tag.equalsIgnoreCase("BungeeChat")) {
+        if (!tag.equalsIgnoreCase("BungeeChatTEST")) {
             return;
         }
         ByteArrayDataInput in = ByteStreams.newDataInput(data);
