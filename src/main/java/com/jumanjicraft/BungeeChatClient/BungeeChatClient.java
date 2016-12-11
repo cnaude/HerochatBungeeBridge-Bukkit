@@ -11,9 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class BungeeChatClient extends JavaPlugin {
 
-    private String prefixSymbol;
-    private boolean sendRawMessage;
-    private BungeeChatListener bungeeChatListener;
+    private BungeeChatSender bungeeChatSender;
     public VaultHook vaultHelpers;
     static final Logger LOG = Logger.getLogger("Minecraft");
     public String LOG_HEADER;
@@ -34,28 +32,18 @@ public class BungeeChatClient extends JavaPlugin {
         saveConfig();
         loadConfig();
         setupVault();
-        bungeeChatListener = new BungeeChatListener(this);
-        getServer().getPluginManager().registerEvents(new BungeeHeroListener(this), this);
+        bungeeChatSender = new BungeeChatSender(this);
+        getServer().getPluginManager().registerEvents(new HerochatListener(this), this);
         getCommand("bungeechatreload").setExecutor(new BungeeChatReloadCommand(this));
     }
 
     public void loadConfig() {
-        prefixSymbol = getConfig().getString("prefix-symbol", "");
-        sendRawMessage = getConfig().getBoolean("send-raw-message", false);
         debugEnabled = getConfig().getBoolean("debug", false);
         logDebug("Debug enabled.");
     }
     
-    public String getPrefixSymbol() {
-        return prefixSymbol;
-    }
-    
-    public boolean rawMessagesEnabled() {
-        return sendRawMessage;
-    }
-    
-    public BungeeChatListener getBungeeChatListener() {
-        return bungeeChatListener;
+    public BungeeChatSender getBungeeChatListener() {
+        return bungeeChatSender;
     }
     
     /**
