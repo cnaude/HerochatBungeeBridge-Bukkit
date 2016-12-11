@@ -17,7 +17,7 @@ public class BungeeChatSender {
     }
     
     private void register() {
-        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeHeroChat");
+        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
     }    
     
     /**
@@ -26,6 +26,9 @@ public class BungeeChatSender {
      */
     public void TransmitChatMessage(ChatMessage cm) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        
+        /* My custom tag */
+        out.writeUTF("PurpleBungeeIRC");
         
         /* Herochat tokens */
         out.writeUTF(cm.getChannel());
@@ -41,7 +44,7 @@ public class BungeeChatSender {
         out.writeUTF(cm.getGroupSuffix());
         out.writeUTF(cm.getPlayerGroup());
         
-        plugin.getServer().sendPluginMessage(plugin, "BungeeHeroChat", out.toByteArray());
+        plugin.getServer().sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
     }
 
 }
