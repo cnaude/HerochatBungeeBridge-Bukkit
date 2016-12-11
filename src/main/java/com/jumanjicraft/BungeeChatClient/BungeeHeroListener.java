@@ -1,6 +1,8 @@
 package com.jumanjicraft.BungeeChatClient;
 
 import com.dthielke.api.event.ChannelChatEvent;
+import com.google.common.hash.Hasher;
+import com.google.common.hash.Hashing;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -9,6 +11,7 @@ import org.bukkit.event.Listener;
 public class BungeeHeroListener implements Listener {
 
     private final BungeeChatClient plugin;
+    Hasher hasher = Hashing.md5().newHasher();
 
     public BungeeHeroListener(BungeeChatClient plugin) {
         this.plugin = plugin;
@@ -30,8 +33,13 @@ public class BungeeHeroListener implements Listener {
         cm.setGroupPrefix(plugin.getGroupPrefix(player));
         cm.setGroupSuffix(plugin.getGroupSuffix(player));
         cm.setGroup(plugin.getPlayerGroup(player));
-        
-        cm.setToken(String.valueOf(event.hashCode()));
+
+        String time = String.valueOf(System.currentTimeMillis());
+        String unencodedMessage = time + player.getName() + event.getMessage();
+
+        hasher.putBytes(unencodedMessage.getBytes());
+        String md5 = hasher.hash().toString();
+        cm.setToken(md5);
 
         plugin.logDebug("Transmitting message to BungeeCord: <" + cm.getChannel() + "><" + cm.getSender() + "> " + cm.getMessage());
         plugin.getBungeeChatListener().TransmitChatMessage(cm);
