@@ -18,21 +18,23 @@ public class BungeeHeroListener implements Listener {
     public void onChannelChatEvent(ChannelChatEvent event) {
         Player player = event.getChatter().getPlayer();
         ChatMessage cm = new ChatMessage();
-        
+
         cm.setMessage(event.getMessage());
         cm.setChannelName(event.getChannel().getName());
         cm.setSenderName(player.getName());
         cm.setHeroColor(event.getChannel().getColor().toString());
         cm.setHeroNick(event.getChannel().getNick());
-        
+
         cm.setPlayerPrefix(plugin.getPlayerPrefix(player));
         cm.setPlayerSuffix(plugin.getPlayerSuffix(player));
         cm.setGroupPrefix(plugin.getGroupPrefix(player));
         cm.setGroupSuffix(plugin.getGroupSuffix(player));
         cm.setGroup(plugin.getPlayerGroup(player));
         
-        plugin.logDebug("Transmitting message to BungeeCord: <" + cm.getChannel() + "><" +cm.getSender() + "> "+ cm.getMessage());
+        cm.setToken(String.valueOf(event.hashCode()));
+
+        plugin.logDebug("Transmitting message to BungeeCord: <" + cm.getChannel() + "><" + cm.getSender() + "> " + cm.getMessage());
         plugin.getBungeeChatListener().TransmitChatMessage(cm);
     }
-    
+
 }

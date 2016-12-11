@@ -47,6 +47,9 @@ public class BungeeChatListener implements PluginMessageListener {
         out.writeUTF(cm.getGroupSuffix());
         out.writeUTF(cm.getPlayerGroup());
         
+        /* HashCode for duplicate message workaround */
+        out.writeUTF(cm.getToken());
+        
         plugin.getServer().sendPluginMessage(plugin, "BungeeChat", out.toByteArray());
     }
 

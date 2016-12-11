@@ -10,7 +10,7 @@
         <build.number>SNAPSHOT</build.number>
     </properties>
     
-    <version>0.4-${build.number}</version>
+    <version>0.4-b${build.number}</version>
     <url>http://www.spigotmc.org/resources/herochatbungeebridge-bukkit.188/</url>
     
     <build>
@@ -117,4 +117,15 @@
         </dependency>
         
     </dependencies>
+    
+    <distributionManagement>
+        <repository>
+            <id>stage-repo</id>
+            <url>file://${basedir}/../repo/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>stage-repo-stapshots</id>
+            <url>file://${basedir}/../repo/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

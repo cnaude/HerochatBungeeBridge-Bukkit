@@ -31,7 +31,7 @@ public class ChatMessage {
     private String groupPrefix = "";
     private String groupSuffix = "";
     private String playerGroup = "";
-    
+    private String token = "";
     
     public void setMessage(String s) {
         this.message = s;
@@ -73,6 +73,10 @@ public class ChatMessage {
         this.playerGroup = s;
     }
     
+    public void setToken(String s) {
+        this.token = s;
+    }
+    
     public String getMessage() {
         return message;
     }
@@ -111,5 +115,9 @@ public class ChatMessage {
     
     public String getPlayerGroup() {
         return playerGroup;
+    }
+    
+    public String getToken() {
+        return token;
     }
 }
