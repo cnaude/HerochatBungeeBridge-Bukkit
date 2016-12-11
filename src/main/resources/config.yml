@@ -5,3 +5,4 @@
 # I added the &a[S] at the start on my survival server which will prefix all messages from that server with &a[S]. On my creative server it is set to &a[C].]
 prefix-symbol: [N]
 debug: false
+send-raw-message: false
