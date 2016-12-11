@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 public class BungeeHeroListener implements Listener {
 
     private final BungeeChatClient plugin;
-    Hasher hasher = Hashing.md5().newHasher();
 
     public BungeeHeroListener(BungeeChatClient plugin) {
         this.plugin = plugin;
@@ -37,8 +36,10 @@ public class BungeeHeroListener implements Listener {
         String time = String.valueOf(System.currentTimeMillis());
         String unencodedMessage = time + player.getName() + event.getMessage();
 
+        Hasher hasher = Hashing.md5().newHasher();
         hasher.putBytes(unencodedMessage.getBytes());
         String md5 = hasher.hash().toString();
+        
         cm.setToken(md5);
 
         plugin.logDebug("Transmitting message to BungeeCord: <" + cm.getChannel() + "><" + cm.getSender() + "> " + cm.getMessage());
