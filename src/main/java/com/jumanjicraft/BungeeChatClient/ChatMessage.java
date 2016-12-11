@@ -21,7 +21,7 @@ package com.jumanjicraft.BungeeChatClient;
  * @author cnaude
  */
 public class ChatMessage {
-    private String tag = "";
+    private String subChannel = "";
     private String message = "";
     private String channel = "";
     private String sender = "";
@@ -33,8 +33,8 @@ public class ChatMessage {
     private String groupSuffix = "";
     private String playerGroup = "";
     
-    public void setTag(String s) {
-        this.tag = s;
+    public void setSubChannel(String s) {
+        this.subChannel = s;
     }
     
     public void setMessage(String s) {
@@ -77,8 +77,8 @@ public class ChatMessage {
         this.playerGroup = s;
     }
     
-    public String getTag() {
-        return tag;
+    public String getSubChannel() {
+        return subChannel;
     }
     
     public String getMessage() {
