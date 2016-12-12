@@ -67,15 +67,18 @@ public class BungeeChatListener implements PluginMessageListener {
 
         ByteArrayDataInput in = ByteStreams.newDataInput(data);
 
-        String subChannel = in.readUTF();
-        String channelName = in.readUTF();
-        String message = in.readUTF();
-        plugin.logDebug("SubChannel: " + subChannel);
-
-        if (subChannel.equals("PurpleBungeeIRC")) {
-            Channel channel = ChannelManager.getInstance().getChannel(channelName);
-            channel.sendRawMessage(message);
-        } 
+        try {
+            String subChannel = in.readUTF();
+            String channelName = in.readUTF();
+            String message = in.readUTF();
+            plugin.logDebug("SubChannel: " + subChannel);
+            if (subChannel.equals("PurpleBungeeIRC")) {
+                Channel channel = ChannelManager.getInstance().getChannel(channelName);
+                channel.sendRawMessage(message);
+            } 
+        } catch (Exception ex) {
+            plugin.logDebug(ex.getMessage());
+        }
 
     }
 
