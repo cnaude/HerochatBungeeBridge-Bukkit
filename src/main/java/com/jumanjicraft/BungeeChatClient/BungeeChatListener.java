@@ -75,9 +75,7 @@ public class BungeeChatListener implements PluginMessageListener {
         if (subChannel.equals("PurpleBungeeIRC")) {
             Channel channel = ChannelManager.getInstance().getChannel(channelName);
             channel.sendRawMessage(message);
-        } else {
-            plugin.logDebug("Invalid SubChannel");
-        }
+        } 
 
     }
 
