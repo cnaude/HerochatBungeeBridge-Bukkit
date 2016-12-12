@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class BungeeChatClient extends JavaPlugin {
 
-    private BungeeChatSender bungeeChatSender;
+    private BungeeChatListener bungeeChatSender;
     public VaultHook vaultHelpers;
     static final Logger LOG = Logger.getLogger("Minecraft");
     public String LOG_HEADER;
@@ -32,7 +32,7 @@ public class BungeeChatClient extends JavaPlugin {
         saveConfig();
         loadConfig();
         setupVault();
-        bungeeChatSender = new BungeeChatSender(this);
+        bungeeChatSender = new BungeeChatListener(this);
         getServer().getPluginManager().registerEvents(new HerochatListener(this), this);
         getCommand("bungeechatreload").setExecutor(new BungeeChatReloadCommand(this));
     }
@@ -42,7 +42,7 @@ public class BungeeChatClient extends JavaPlugin {
         logDebug("Debug enabled.");
     }
     
-    public BungeeChatSender getBungeeChatListener() {
+    public BungeeChatListener getBungeeChatListener() {
         return bungeeChatSender;
     }
     

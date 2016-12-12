@@ -1,14 +1,14 @@
 package com.jumanjicraft.BungeeChatClient;
 
-import com.dthielke.Herochat;
 import com.dthielke.api.Channel;
+import com.dthielke.channel.ChannelManager;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
-public class BungeeChatSender implements PluginMessageListener {
+public class BungeeChatListener implements PluginMessageListener {
 
     private final BungeeChatClient plugin;
 
@@ -16,14 +16,14 @@ public class BungeeChatSender implements PluginMessageListener {
      *
      * @param plugin
      */
-    public BungeeChatSender(BungeeChatClient plugin) {
+    public BungeeChatListener(BungeeChatClient plugin) {
         this.plugin = plugin;
         register();
     }
 
     private void register() {
-        plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "BungeeChat", this);
-        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeChat");
+        plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "BungeeCord", this);
+        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
     }
 
     /**
@@ -33,8 +33,8 @@ public class BungeeChatSender implements PluginMessageListener {
     public void TransmitChatMessage(ChatMessage cm) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
 
-        /* My custom tag */
-        out.writeUTF("PurpleBungeeIRC");
+        /* SubChannel */
+        out.writeUTF(cm.getSubChannel());
 
         /* Herochat tokens */
         out.writeUTF(cm.getChannel());
@@ -50,25 +50,34 @@ public class BungeeChatSender implements PluginMessageListener {
         out.writeUTF(cm.getGroupSuffix());
         out.writeUTF(cm.getPlayerGroup());
 
-        plugin.getServer().sendPluginMessage(plugin, "BungeeChat", out.toByteArray());
+        plugin.getServer().sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
     }
 
+    /**
+     *
+     * @param tag
+     * @param player
+     * @param data
+     */
     @Override
     public void onPluginMessageReceived(String tag, Player player, byte[] data) {
-        if (!tag.equalsIgnoreCase("BungeeChat")) {
-            return;
-        }
-        ByteArrayDataInput in = ByteStreams.newDataInput(data);
-        String chatchannel = in.readUTF();
-        String message = in.readUTF();
-        plugin.logDebug("chatChannel: " + chatchannel);
-        plugin.logDebug("message: " + message);
-        Channel channel = Herochat.getChannelManager().getChannel(chatchannel);
-        if (channel == null) {
+        if (!tag.equalsIgnoreCase("BungeeCord")) {
             return;
         }
 
-        channel.sendRawMessage(message);
+        ByteArrayDataInput in = ByteStreams.newDataInput(data);
+
+        String subChannel = in.readUTF();
+        String channelName = in.readUTF();
+        String message = in.readUTF();
+        plugin.logDebug("SubChannel: " + subChannel);
+
+        if (subChannel.equals("PurpleBungeeIRC")) {
+            Channel channel = ChannelManager.getInstance().getChannel(channelName);
+            channel.sendRawMessage(message);
+        } else {
+            plugin.logDebug("Invalid SubChannel");
+        }
 
     }
 

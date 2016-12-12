@@ -18,6 +18,8 @@ public class HerochatListener implements Listener {
     public void onChannelChatEvent(ChannelChatEvent event) {
         Player player = event.getChatter().getPlayer();
         ChatMessage cm = new ChatMessage();
+        
+        cm.setSubChannel("PurpleBungeeIRC");
 
         cm.setMessage(event.getMessage());
         cm.setChannelName(event.getChannel().getName());
