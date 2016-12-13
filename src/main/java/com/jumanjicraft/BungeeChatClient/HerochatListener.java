@@ -34,7 +34,7 @@ public class HerochatListener implements Listener {
         cm.setGroup(plugin.getPlayerGroup(player));
 
         plugin.logDebug("Transmitting message to BungeeCord: <" + cm.getChannel() + "><" + cm.getSender() + "> " + cm.getMessage());
-        plugin.getBungeeChatListener().TransmitChatMessage(cm);
+        plugin.getBungeeChatListener().TransmitChatMessage(cm, player);
     }
 
 }

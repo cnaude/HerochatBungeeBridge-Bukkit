@@ -29,8 +29,9 @@ public class BungeeChatListener implements PluginMessageListener {
     /**
      *
      * @param cm
+     * @param player
      */
-    public void TransmitChatMessage(ChatMessage cm) {
+    public void TransmitChatMessage(ChatMessage cm, Player player) {
         ByteArrayDataOutput data = ByteStreams.newDataOutput();
         
         /* SubChannel */
@@ -49,11 +50,9 @@ public class BungeeChatListener implements PluginMessageListener {
         data.writeUTF(cm.getGroupPrefix());
         data.writeUTF(cm.getGroupSuffix());
         data.writeUTF(cm.getPlayerGroup());
-        
-        /* Timestamp */
-        data.writeLong(System.currentTimeMillis());
 
-        plugin.getServer().sendPluginMessage(plugin, "BungeeCord", data.toByteArray());
+        player.sendPluginMessage(plugin, "BungeeCord", data.toByteArray());
+        
     }
 
     /**
