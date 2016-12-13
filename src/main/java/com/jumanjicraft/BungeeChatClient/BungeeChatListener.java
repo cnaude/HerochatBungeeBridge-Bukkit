@@ -31,43 +31,57 @@ public class BungeeChatListener implements PluginMessageListener {
      * @param cm
      */
     public void TransmitChatMessage(ChatMessage cm) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-
+        ByteArrayDataOutput data = ByteStreams.newDataOutput();
+        
         /* SubChannel */
-        out.writeUTF(cm.getSubChannel());
+        data.writeUTF(cm.getSubChannel());
 
         /* Herochat tokens */
-        out.writeUTF(cm.getChannel());
-        out.writeUTF(cm.getMessage());
-        out.writeUTF(cm.getSender());
-        out.writeUTF(cm.getHeroColor());
-        out.writeUTF(cm.getHeroNick());
+        data.writeUTF(cm.getChannel());
+        data.writeUTF(cm.getMessage());
+        data.writeUTF(cm.getSender());
+        data.writeUTF(cm.getHeroColor());
+        data.writeUTF(cm.getHeroNick());
 
         /* Vault tokens */
-        out.writeUTF(cm.getPlayerPrefix());
-        out.writeUTF(cm.getPlayerSuffix());
-        out.writeUTF(cm.getGroupPrefix());
-        out.writeUTF(cm.getGroupSuffix());
-        out.writeUTF(cm.getPlayerGroup());
+        data.writeUTF(cm.getPlayerPrefix());
+        data.writeUTF(cm.getPlayerSuffix());
+        data.writeUTF(cm.getGroupPrefix());
+        data.writeUTF(cm.getGroupSuffix());
+        data.writeUTF(cm.getPlayerGroup());
+        
+        /* Timestamp */
+        data.writeLong(System.currentTimeMillis());
 
-        plugin.getServer().sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
+        plugin.getServer().sendPluginMessage(plugin, "BungeeCord", data.toByteArray());
     }
 
     /**
      *
-     * @param tag
+     * @param pluginChannel
+     * @param bytes
      * @param player
-     * @param data
      */
     @Override
-    public void onPluginMessageReceived(String tag, Player player, byte[] data) {
-        if (!tag.equalsIgnoreCase("BungeeCord")) {
+    public void onPluginMessageReceived(String pluginChannel, Player player, byte[] bytes) {
+        if (!pluginChannel.equalsIgnoreCase("BungeeCord")) {
             return;
         }
+        
+        // Process messages from PurpleBungeeIRC via BungeeCord
+        ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
+        String messageType = in.readUTF();
+        String destination = in.readUTF();
+        String subChannel = in.readUTF();
+        plugin.logDebug("Received message: [t: " + messageType + "] [d: " 
+                + destination + "] [s: "+ subChannel + "]");
+        if (subChannel.equals("PurpleBungeeIRC")) {
+            byte[] msgBytes = new byte[in.readShort()];
+            in.readFully(msgBytes);
+            processMessage(ByteStreams.newDataInput(msgBytes));
+        }
 
-        ByteArrayDataInput in = ByteStreams.newDataInput(data);
-
-        try {
+        /*try {
             String subChannel = in.readUTF();
             String channelName = in.readUTF();
             String message = in.readUTF();
@@ -78,8 +92,24 @@ public class BungeeChatListener implements PluginMessageListener {
             } 
         } catch (Exception ex) {
             plugin.logDebug(ex.getMessage());
-        }
+        }*/
+    }
 
+    private void processMessage(ByteArrayDataInput in) {
+        String messageType = in.readUTF();
+        String channelName = in.readUTF();
+        switch (messageType) {
+            case "CHAT":
+                Channel channel = ChannelManager.getInstance().getChannel(channelName);
+                if ((channel == null) || (!channel.isCrossServer())) {
+                    return;
+                }
+                channel.sendRawMessage(in.readUTF());
+
+                break;
+            case "PM":
+                break;
+        }
     }
 
 }
