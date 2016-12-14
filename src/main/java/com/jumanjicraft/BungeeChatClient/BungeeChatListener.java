@@ -33,7 +33,7 @@ public class BungeeChatListener implements PluginMessageListener {
      */
     public void TransmitChatMessage(ChatMessage cm, Player player) {
         ByteArrayDataOutput data = ByteStreams.newDataOutput();
-        
+
         /* SubChannel */
         data.writeUTF(cm.getSubChannel());
 
@@ -52,7 +52,7 @@ public class BungeeChatListener implements PluginMessageListener {
         data.writeUTF(cm.getPlayerGroup());
 
         player.sendPluginMessage(plugin, "BungeeCord", data.toByteArray());
-        
+
     }
 
     /**
@@ -66,20 +66,29 @@ public class BungeeChatListener implements PluginMessageListener {
         if (!pluginChannel.equalsIgnoreCase("BungeeCord")) {
             return;
         }
-        
-        // Process messages from PurpleBungeeIRC via BungeeCord
-        ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
-        String messageType = in.readUTF();
-        String destination = in.readUTF();
-        String subChannel = in.readUTF();
-        plugin.logDebug("Received message: [t: " + messageType + "] [d: " 
-                + destination + "] [s: "+ subChannel + "]");
+
+        String messageType;
+        String destination;
+        String subChannel;
+        ByteArrayDataInput in;
+
+        try {
+            in = ByteStreams.newDataInput(bytes);
+            messageType = in.readUTF();
+            destination = in.readUTF();
+            subChannel = in.readUTF();
+        } catch (Exception ex) {
+            plugin.logDebug(ex.getMessage());
+            return;
+        }
+        plugin.logDebug("Received message: [t: " + messageType + "] [d: "
+                + destination + "] [s: " + subChannel + "]");
         if (subChannel.equals("PurpleBungeeIRC")) {
             byte[] msgBytes = new byte[in.readShort()];
             in.readFully(msgBytes);
             processMessage(ByteStreams.newDataInput(msgBytes));
         }
-        
+
     }
 
     private void processMessage(ByteArrayDataInput in) {
